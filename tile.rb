@@ -31,7 +31,8 @@ class Tile
   end
 
   def neighbor_bomb_count
-
+    count = 0
+    neighbors.each { |neighbor| count += 1 if neighbor.bomb }
+    count
   end
-
 end
