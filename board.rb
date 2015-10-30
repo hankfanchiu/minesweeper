@@ -1,19 +1,41 @@
-class Board
-  BOMB_COUNT = 10
+require_relative 'tile'
 
-  def initialize(grid = Array.new(9) { Array.new(9) })
-    @grid = grid
+class Board
+  def initialize(grid_size = 9)
+    @grid = Array.new(grid_size) { Array.new(grid_size) }
+    place_tiles
+    total_bomb_count = grid_size + 1
+    place_bombs(total_bomb_count)
   end
 
-  def place_bombs
-    bomb_count = 0
-    until bomb_count == BOMB_COUNT
-      x, y = (0...@grid.size).sample, (0...@grid.size).sample
-      position = [x, y]
-      if self[position].nil?
-        self[position] = Tile.new(position, true, self)
-        bomb_count += 1
+  def place_tiles
+    @grid = @grid.map.with_index do |row, x|
+      row.map.with_index do |tile, y|
+        position = [x, y]
+        tile = Tile.new(position, false, self)
       end
     end
+  end
+
+  def place_bombs(total_bomb_count)
+    bomb_count = 0
+    until bomb_count == total_bomb_count
+      size_array = (0...@grid.size).to_a
+      x, y = size_array.sample, size_array.sample
+      position = [x, y]
+
+      self[position].bombed = true
+      bomb_count += 1
+    end
+  end
+
+  def [](position)
+    x, y = position
+    @grid[x][y]
+  end
+
+  def []=(position, tile)
+    x, y = position
+    @grid[x][y] = tile
   end
 end

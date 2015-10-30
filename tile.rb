@@ -1,4 +1,6 @@
 class Tile
+  attr_accessor :bombed
+
   SURROUNDING_POSITIONS = [[0, 1], [1, 1], [1, 0], [1, -1],
                           [0, -1], [-1, -1], [-1, 0], [-1, 1]]
 
@@ -10,8 +12,38 @@ class Tile
     @revealed = false
   end
 
+  def inspect
+    if @bombed
+      "true"
+    else
+      "false"
+    end
+  end
+
+  def display
+    return "F" if @flagged
+    return neighbor_bomb_count if @revealed && neighbor_bomb_count > 0
+    return "_" if @revealed
+    return "*" unless @revealed
+  end
+
+  def flag
+    @flagged = true unless @flagged
+  end
+
+  def unflag
+    @flagged = false if @flagged
+  end
+
   def reveal
     @revealed = true unless @revealed
+  end
+
+  private
+  def neighbor_bomb_count
+    count = 0
+    neighbors.each { |neighbor| count += 1 if neighbor.bomb }
+    count
   end
 
   def neighbors
@@ -28,11 +60,5 @@ class Tile
     end
 
     neighbors
-  end
-
-  def neighbor_bomb_count
-    count = 0
-    neighbors.each { |neighbor| count += 1 if neighbor.bomb }
-    count
   end
 end
