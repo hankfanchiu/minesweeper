@@ -15,16 +15,19 @@ class Tile
   end
 
   def neighbors
+    board_size = @board.grid.length
 
-  end
-
-  def neighbors_positions
-    positions = []
+    neighbors = []
     SURROUNDING_POSITIONS.each do |surround|
-      x = @position[0] + surround[0]
-      y = @position[1] + surround[1]
-      board_size = @board.grid.length
+      x, y = (@position[0] + surround[0]), (@position[1] + surround[1])
+      neighbor_pos = [x, y]
 
+      if neighbor_pos.all? { |coord| coord.between?(0...board_size) }
+        neighbors << @board[neighbor_pos]
+      end
+    end
+
+    neighbors
   end
 
   def neighbor_bomb_count
