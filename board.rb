@@ -38,4 +38,10 @@ class Board
     x, y = position
     @grid[x][y] = tile
   end
+
+  def display
+    @grid.map do |row|
+      row.map { |tile| tile.display }
+    end
+  end
 end

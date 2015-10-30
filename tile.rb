@@ -1,7 +1,7 @@
 class Tile
   attr_accessor :bombed
 
-  SURROUNDING_POSITIONS = [[0, 1], [1, 1], [1, 0], [1, -1],
+  NEIGHBORING_POSITIONS = [[0, 1], [1, 1], [1, 0], [1, -1],
                           [0, -1], [-1, -1], [-1, 0], [-1, 1]]
 
   def initialize(position, bombed = false, board)
@@ -10,14 +10,6 @@ class Tile
     @board = board
     @flagged = false
     @revealed = false
-  end
-
-  def inspect
-    if @bombed
-      "true"
-    else
-      "false"
-    end
   end
 
   def display
@@ -42,7 +34,7 @@ class Tile
   private
   def neighbor_bomb_count
     count = 0
-    neighbors.each { |neighbor| count += 1 if neighbor.bomb }
+    neighbors.each { |neighbor| count += 1 if neighbor.bombed }
     count
   end
 
@@ -50,8 +42,8 @@ class Tile
     board_size = @board.grid.length
 
     neighbors = []
-    SURROUNDING_POSITIONS.each do |surround|
-      x, y = (@position[0] + surround[0]), (@position[1] + surround[1])
+    NEIGHBORING_POSITIONS.each do |neighbor|
+      x, y = (@position[0] + neighbor[0]), (@position[1] + neighbor[1])
       neighbor_pos = [x, y]
 
       if neighbor_pos.all? { |coord| coord.between?(0...board_size) }
