@@ -1,6 +1,6 @@
-require_relative 'tile'
-
 class Board
+  attr_reader :grid
+
   def initialize(grid_size = 9)
     @grid = Array.new(grid_size) { Array.new(grid_size) }
     place_tiles
@@ -43,5 +43,12 @@ class Board
     @grid.map do |row|
       row.map { |tile| tile.display }
     end
+  end
+
+  def valid_position?(position)
+    if position.all? { |coord| coord.between?(0...@grid.size) }
+      return true unless self[position].revealed
+    end
+    false
   end
 end

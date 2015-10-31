@@ -19,7 +19,7 @@ class Tile
     return "*" unless @revealed
   end
 
-  def flag
+  def toggle_flag
     @flagged = @flagged ? false : true
   end
 

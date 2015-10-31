@@ -1,3 +1,6 @@
+require_relative 'board'
+require_relative 'tile'
+
 class Game
   def initialize(board_size)
     @board = Board.new(board_size)
@@ -13,19 +16,25 @@ class Game
   end
 
   def welcome_message
-
+    puts "Time to play Minesweeper"
   end
 
   def over?
-    won? || bombed?
+    bombed? || won?
   end
 
   def won?
-
+    @board.grid.each do |row|
+      row.each { |tile| return false unless tile.revealed }
+    end
+    true
   end
 
   def bombed?
-
+    @board.grid.each do |row|
+      row.each { |tile| return true if tile.bombed && tile.revealed }
+    end
+    false
   end
 
   def display_board
@@ -35,8 +44,8 @@ class Game
   def play_turn
     position, action = nil, nil
     position = get_position until valid_position?(position)
-    action = get_action until valid_action?(action)
-    if action == :flag
+    action = get_action
+    if action == :F
       flag_tile(position)
     else
       reveal_tile(position)
@@ -44,31 +53,47 @@ class Game
   end
 
   def get_position
-
+    print "Enter coordinates: "
+    begin
+      coordinates = gets.chomp
+      array = coordinates.scan(/\d+/).map(&:to_i)
+      raise "Invalid coordinates" if array.length != 2
+    rescue
+      print "You entered invalid coordinates. Try again: "
+      retry
+    end
+    array
   end
 
   def valid_position?(position)
-
+    @board.valid_position?(position)
   end
 
   def get_action
-
-  end
-
-  def valid_action?(action)
-
+    print "Reveal (R) or flag/unflag (F)? "
+    begin
+      action = gets.chomp.upcase.to_sym
+      raise "Invalid action" unless (action == :R || action == :F)
+    rescue
+      print "You entered an invalid action. Try again: "
+      retry
+    end
+    action
   end
 
   def flag_tile(position)
-
+    @board[position].toggle_flag
   end
 
   def reveal_tile(position)
-
+    @board[position].reveal
   end
 
   def game_over_message
-
+    if bombed?
+      puts "You lose"
+    else
+      puts "You win"
+    end
   end
-
 end
