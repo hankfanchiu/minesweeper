@@ -1,3 +1,5 @@
+require_relative 'tile'
+
 class Board
   attr_reader :grid
 
@@ -40,15 +42,27 @@ class Board
   end
 
   def display
-    @grid.map do |row|
-      row.map { |tile| tile.display }
+    display = ""
+    @grid.each do |row|
+      display_row = []
+      row.each { |tile| display_row << "[ #{tile.display} ]" }
+      display_row_string = display_row.join(" ")
+
+      display << "#{display_row_string}\n\n"
     end
+    display
   end
 
   def valid_position?(position)
-    if position.all? { |coord| coord.between?(0...@grid.size) }
+    if position.all? { |coord| coord.between?(0, @grid.size - 1) }
       return true unless self[position].revealed
     end
     false
+  end
+
+  def reveal_all
+    @grid.each do |row|
+      row.each { |tile| tile.reveal }
+    end
   end
 end

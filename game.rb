@@ -12,6 +12,8 @@ class Game
       display_board
       play_turn
     end
+    reveal_board
+    display_board
     game_over_message
   end
 
@@ -38,12 +40,16 @@ class Game
   end
 
   def display_board
-
+    system("clear")
+    puts @board.display
   end
 
   def play_turn
-    position, action = nil, nil
-    position = get_position until valid_position?(position)
+    position = nil
+    until valid_position?(position)
+      position = get_position
+    end
+
     action = get_action
     if action == :F
       flag_tile(position)
@@ -66,6 +72,7 @@ class Game
   end
 
   def valid_position?(position)
+    return false if position.nil?
     @board.valid_position?(position)
   end
 
@@ -89,6 +96,10 @@ class Game
     @board[position].reveal
   end
 
+  def reveal_board
+    @board.reveal_all
+  end
+
   def game_over_message
     if bombed?
       puts "You lose"
@@ -96,4 +107,11 @@ class Game
       puts "You win"
     end
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  print "Enter board size: "
+  number = gets.chomp.to_i
+
+  Game.new(number).play
 end
