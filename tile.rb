@@ -20,15 +20,11 @@ class Tile
   end
 
   def flag
-    @flagged = true unless @flagged
-  end
-
-  def unflag
-    @flagged = false if @flagged
+    @flagged = @flagged ? false : true
   end
 
   def reveal
-    @revealed = true unless @revealed
+    @revealed = true unless @revealed && @flagged
   end
 
   private
